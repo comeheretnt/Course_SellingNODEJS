@@ -10,12 +10,14 @@ const {
   updateUserProfile,
   updatePassword,
   deleteAccount,
+  getAllUsers
 } = require('../controllers/user.controller');
 
 // Public Routes
 router.post('/register', createAccount);  // Register a new user
 router.post('/login', loginUser);         // Login
 router.get('/logout', logoutUser);        // Logout
+router.get('/', getAllUsers);              // Get all users
 
 // Authenticated Routes
 router.get('/profile', checkAuth, authorizeUser, getUserProfile);         // Get user profile

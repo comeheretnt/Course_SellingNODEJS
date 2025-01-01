@@ -50,7 +50,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       <div className="modal-backdrop fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="modal-dialog">
           <div className="modal-content">
-            <div className="modal-header bg-green-600 text-white text-center p-4 relative">
+            <div className="modal-header bg-[#ff7e84] text-white text-center p-4 relative">
               <button
                 type="button"
                 className="close absolute right-4 top-4 text-white text-xl"
@@ -65,14 +65,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
             <div className="modal-body p-5">
               {error && <div className="text-red-500">{error}</div>}
-              <form onSubmit={handleSubmit}>
-                <div className="form-group mb-4">
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-[30px] mt-6">
+                <div>
                   <label htmlFor="email" className="block font-medium text-gray-700">
                     <span className="glyphicon glyphicon-user mr-2"></span> Email
                   </label>
                   <input
                     type="email"
-                    className="form-control w-full p-2 border border-gray-300 rounded"
+                    className="from-control"
                     id="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -80,13 +80,13 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                     required
                   />
                 </div>
-                <div className="form-group mb-4">
+                <div>
                   <label htmlFor="password" className="block font-medium text-gray-700">
                     <span className="glyphicon glyphicon-eye-open mr-2"></span> Password
                   </label>
                   <input
                     type="password"
-                    className="form-control w-full p-2 border border-gray-300 rounded"
+                    className="from-control"
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -102,7 +102,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-success btn-block py-2 text-black text-center font-bold"
+                  className="btn btn-primary mt-[10px]"
                 >
                   <span className="glyphicon glyphicon-off mr-2"></span> Login
                 </button>
@@ -112,16 +112,16 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
             <div className="modal-footer bg-gray-100 p-4 text-center text-black">
               <button
                 type="button"
-                className="btn btn-danger btn-default pull-left"
+                className="btn btn-primary mt-[10px]"
                 onClick={onClose}
               >
                 <span className="glyphicon glyphicon-remove mr-2"></span> Cancel
               </button>
               <p className="mt-3">
-                Not a member? <a href="#" onClick={handleSignUpClick}>Sign Up</a>
+                Not a member? <a href="#" onClick={handleSignUpClick} className="text-[#ff7e84]">Sign Up</a>
               </p>
               <p>
-                Forgot <a href="#">Password?</a>
+                Forgot <a href="#" className="text-[#ff7e84]">Password?</a>
               </p>
             </div>
           </div>

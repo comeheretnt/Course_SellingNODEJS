@@ -14,6 +14,7 @@ import {
   user2,
   likeIcon,
 } from "../constant/images";
+import PaymentModal from "./PaymentModal";
 
 const CourseDetails = () => {
   const { id } = useParams(); // Extract ID from URL
@@ -21,6 +22,9 @@ const CourseDetails = () => {
   const [relatedCourses, setRelatedCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [notification, setNotification] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchCourseDetails = async () => {
@@ -54,14 +58,42 @@ const CourseDetails = () => {
       }
     };
 
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await fetch("http://localhost:3000/api/users/profile", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        }
+      }
+    };
+
     fetchCourseDetails();
+    fetchUser();
   }, [id]);
+
+  const handleEnrollClick = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setNotification("You must log in to enroll in the course.");
+      return;
+    }
+    setIsPaymentModalOpen(true);
+  };
 
   if (loading) return <div>Loading course details...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="nav-tab-wrapper tabs  section-padding">
+    <div className="nav-tab-wrapper tabs section-padding">
       <div className="container">
         <div className="grid grid-cols-12 gap-[30px]">
           <div className="lg:col-span-8 col-span-12">
@@ -230,9 +262,15 @@ const CourseDetails = () => {
                     </div>
                     <div className="flex-none">{course.language}</div>
                   </li>
-                  <button className="btn btn-primary w-full text-center">
+                  <button
+                    className="btn btn-primary w-full text-center"
+                    onClick={handleEnrollClick}
+                  >
                     Enroll Now
                   </button>
+                  {notification && (
+                    <div className="text-red-500 mt-2">{notification}</div>
+                  )}
                 </ul>
               </div>
 
@@ -272,6 +310,12 @@ const CourseDetails = () => {
           </div>
         </div>
       </div>
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        course={course}
+        user={user}
+      />
     </div>
   );
 };

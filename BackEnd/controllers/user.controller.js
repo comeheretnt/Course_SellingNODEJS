@@ -5,13 +5,27 @@ require('dotenv').config();
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 
+// Password validation regex pattern
+const passwordValidation = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+// Email validation regex pattern (additional check for a valid email)
+const emailValidation = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 // Register User
 exports.createAccount = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phoneNumber } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email, and password are required.' });
+    }
+
+    if (!emailValidation.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format.' });
+    }
+
+    if (!passwordValidation.test(password)) {
+      return res.status(400).json({ message: 'Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.' });
     }
 
     // Check if user already exists
@@ -28,6 +42,7 @@ exports.createAccount = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      phoneNumber, // Include phone number
     });
 
     res.status(201).json({ message: 'User registered successfully.', user: newUser });
@@ -36,6 +51,7 @@ exports.createAccount = async (req, res) => {
     res.status(500).json({ message: 'Error registering user.', error: error.message });
   }
 };
+
 // Login User
 exports.loginUser = async (req, res) => {
   try {
@@ -43,6 +59,10 @@ exports.loginUser = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required.' });
+    }
+
+    if (!emailValidation.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format.' });
     }
 
     const user = await User.findOne({ where: { email } });
@@ -59,7 +79,7 @@ exports.loginUser = async (req, res) => {
 
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET_KEY, { expiresIn: '1h' });
 
-    res.status(200).json({ message: 'Login successful.', token });
+    res.status(200).json({ message: 'Login successful.', token, user });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error logging in.', error: error.message });
@@ -127,6 +147,10 @@ exports.updatePassword = async (req, res) => {
       return res.status(400).json({ message: 'Old password and new password are required.' });
     }
 
+    if (!passwordValidation.test(newPassword)) {
+      return res.status(400).json({ message: 'New password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character.' });
+    }
+
     const user = await User.findByPk(req.user.id);
 
     if (!user) {
@@ -163,5 +187,17 @@ exports.deleteAccount = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error deleting account.', error: error.message });
+  }
+};
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'avatar', 'role', 'phoneNumber'],
+    });
+
+    res.status(200).json({ users });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching users.', error: error.message });
   }
 };
