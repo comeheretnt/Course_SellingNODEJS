@@ -91,15 +91,15 @@ const SideBar = ({ setSearchKeyword, setPriceFilter, setCategoryFilter, setSkill
   };
 
   const handleCategoryChange = (category) => {
-    setCategoryFilter(category);
+    setCategoryFilter(prev => prev === category ? "" : category);
   };
 
   const handleSkillLevelChange = (skillLevel) => {
-    setSkillLevelFilter(skillLevel);
+    setSkillLevelFilter(prev => prev === skillLevel ? "" : skillLevel);
   };
 
   const handleLanguageChange = (language) => {
-    setLanguageFilter(language);
+    setLanguageFilter(prev => prev === language ? "" : language);
   };
 
   return (

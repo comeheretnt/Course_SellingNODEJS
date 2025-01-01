@@ -33,7 +33,7 @@
 
 .modal-header {
   padding: 35px 50px;
-  background-color: #ff69b4; /* Màu hồng */
+  background-color: #ff7e84; /* Màu hồng */
   color: white !important;
   text-align: center;
   font-size: 30px;
@@ -106,17 +106,17 @@
   background-image: none;
   border: 1px solid transparent;
   border-radius: 4px;
-  background-color: #ff69b4; /* Màu hồng cho nút */
+  background-color: #ff7e84; /* Màu hồng cho nút */
   color: black; /* Màu chữ trắng cho nút */
 }
 
 .btn-danger {
-  background-color: #ff69b4; 
+  background-color: #ff7e84; 
   border-color: #ff4da6; 
 }
 
 .btn-success {
-  background-color: #ff69b4; 
+  background-color: #ff7e84; 
   border-color: #ff4da6;
 }
 
@@ -132,7 +132,7 @@
 
 .modal-footer a {
   text-decoration: none;
-  color: #ff69b4; /* Màu hồng */
+  color: #ff7e84; /* Màu hồng */
 }
 
 .modal-footer a:hover {

@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import LoginModal from "../LoginModal"; 
-
+import LoginModal from "../LoginModal";
+import { jwtDecode } from "jwt-decode";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const [user, setUser] = useState(null); // State for user
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // State for dropdown visibility
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // State for login status
 
   const scrollNav = useRef(null); // Reference for sticky behavior
 
@@ -17,16 +18,60 @@ const Header = () => {
   const handleLogin = (token, user) => {
     localStorage.setItem("token", token);
     setUser(user);
+    setIsLoggedIn(true);
   };
 
   const handleLogout = () => {
+    setIsLoggedIn(false);
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
     setIsDropdownOpen(false);
   };
 
+  const isTokenValid = (token) => {
+    try {
+      const decoded = jwtDecode(token);
+      const currentTime = Math.floor(Date.now() / 1000);
+      return decoded.exp > currentTime;
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return false;
+    }
+  };
+
+  const fetchUser = async () => {
+    const token = localStorage.getItem("token");
+    if (!token || !isTokenValid(token)) {
+      handleLogout();
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/users/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setIsLoggedIn(true);
+      } else {
+        console.error("Failed to fetch user data.");
+        handleLogout();
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      handleLogout();
+    }
+  };
+
   useEffect(() => {
-    // Handle sticky navigation on scroll
     const handleScroll = () => {
       const windowScroll = window.scrollY > 100; // Threshold for activating sticky
       scrollNav.current.classList.toggle("rt-sticky-active", windowScroll);
@@ -35,27 +80,11 @@ const Header = () => {
 
     window.addEventListener("scroll", handleScroll);
 
+    fetchUser();
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      // Fetch user profile
-      fetch("http://localhost:3000/api/users/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.user) {
-            setUser(data.user);
-          }
-        });
-    }
   }, []);
 
   return (
@@ -102,7 +131,7 @@ const Header = () => {
 
               {/* Header Buttons */}
               <div className="flex-none flex space-x-[18px]">
-                {user ? (
+                {isLoggedIn ? (
                   <div className="relative hidden lg:block">
                     <span className="text-black cursor-pointer" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
                       Hi, {user.name} <span className="ml-2">&#x25BC;</span>
@@ -110,7 +139,9 @@ const Header = () => {
                     {isDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded shadow-lg">
                         <ul>
-                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
+                          <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                            <Link to="/profile">Profile</Link>
+                          </li>
                           <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={handleLogout}>Logout</li>
                         </ul>
                       </div>
@@ -131,7 +162,7 @@ const Header = () => {
           </div>
         </div>
       </div>
-      <LoginModal isOpen={isModalOpen} onClose={toggleModal} onLogin={handleLogin} setUser={setUser} />
+      <LoginModal isOpen={isModalOpen} onClose={toggleModal} onLogin={handleLogin} />
     </header>
   );
 };

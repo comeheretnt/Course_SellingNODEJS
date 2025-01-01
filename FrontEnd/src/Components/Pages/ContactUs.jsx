@@ -44,17 +44,6 @@ const ContactUs = () => {
                     <div>+88012 2910 1781, +88019 6128 1689</div>
                   </div>
                 </li>
-                <li class="flex">
-                  <div class="flex-none mr-6">
-                    <div class="">
-                      <img src={map} alt="" class="" />
-                    </div>
-                  </div>
-                  <div class="flex-1">
-                    <h4 class="lg:text-xl text-lg mb-1">Office :</h4>
-                    <div>Mountain Green Road 2389, NY, USA</div>
-                  </div>
-                </li>
               </ul>
             </div>
             <div class="xl:col-span-7 lg:col-span-6 col-span-12">
