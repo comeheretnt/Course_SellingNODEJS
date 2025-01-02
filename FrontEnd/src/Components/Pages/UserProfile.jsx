@@ -122,7 +122,7 @@ const UserProfile = () => {
             <div className="min-h-[300px] overflow-y-auto">
               {activeTab === "account" ? (
                 <div className="space-y-4">
-                  {["name", "email", "phoneNumber", "role"].map((field) => (
+                  {["name", "email", "phoneNumber"].map((field) => (
                     <div key={field}>
                       <label className="block font-medium text-gray-700 capitalize">
                         {field}

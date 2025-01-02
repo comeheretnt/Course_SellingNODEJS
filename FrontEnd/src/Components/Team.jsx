@@ -35,7 +35,7 @@ const Team = () => {
     <div className="section-padding">
       <div className="container">
         <div className="text-center">
-          <div className="mini-title">Team Members</div>
+          <div className="mini-title">Our Instructor</div>
           <div className="column-title">
             Our Expert <span className="shape-bg">Instructors</span>
           </div>
