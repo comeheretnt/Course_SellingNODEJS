@@ -34,8 +34,7 @@ const Footer = () => {
                 <span style={{ color: '#ff7e84' }}>EduMarket</span>
                 </a>
                 <p>
-                  Lorem ipsum amet, consectetur adipiscing elit. Suspendis
-                  varius enim eros elementum tristique. Duis cursus.
+                A leading online learning platform connecting students with top instructors worldwide. Diverse courses, learn anytime, anywhere!
                 </p>
                 <ul className="flex space-x-4 pt-8">
                   <li>

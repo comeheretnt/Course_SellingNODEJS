@@ -5,7 +5,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState(""); // New state for phone number
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -22,7 +22,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name, email, password, phoneNumber }), // Include phone number
+        body: JSON.stringify({ name, email, password, phoneNumber }),
       });
 
       const data = await response.json();
@@ -32,7 +32,7 @@ const SignUpModal = ({ isOpen, onClose }) => {
         setName("");
         setEmail("");
         setPassword("");
-        setPhoneNumber(""); // Reset phone number
+        setPhoneNumber("");
       } else {
         setError(data.message);
       }
@@ -62,65 +62,46 @@ const SignUpModal = ({ isOpen, onClose }) => {
               {success && <div className="text-green-500">{success}</div>}
               <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-[30px] mt-6">
                 <div>
-                  <label htmlFor="name" className="block font-medium text-gray-700">
-                    Name
-                  </label>
                   <input
                     type="text"
-                    className="from-control"
-                    id="name"
+                    className="from-control w-full"
+                    placeholder="Name*"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block font-medium text-gray-700">
-                    Email
-                  </label>
                   <input
                     type="email"
-                    className="from-control"
-                    id="email"
+                    className="from-control w-full"
+                    placeholder="Email*"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="phoneNumber" className="block font-medium text-gray-700">
-                    Phone Number
-                  </label>
                   <input
                     type="text"
-                    className="from-control"
-                    id="phoneNumber"
+                    className="from-control w-full"
+                    placeholder="Phone Number*"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    placeholder="Enter your phone number"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="password" className="block font-medium text-gray-700">
-                    Password
-                  </label>
                   <input
                     type="password"
-                    className="from-control"
-                    id="password"
+                    className="from-control w-full"
+                    placeholder="Password*"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
                     required
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary mt-[10px]"
-                >
+                <button className="btn btn-primary mt-[10px] w-full" type="submit">
                   Sign Up
                 </button>
               </form>

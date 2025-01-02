@@ -42,7 +42,7 @@ const Header = () => {
   };
 
   const fetchUser = async () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
     if (!token || !isTokenValid(token)) {
       handleLogout();
       return;

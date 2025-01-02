@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import dayjs from "dayjs";
 import { Disclosure, Tab } from "@headlessui/react";
 import {
@@ -153,16 +152,20 @@ const CourseDetails = () => {
                       <div className=" bg-[#F8F8F8] rounded-md p-8">
                         <div className="md:flex space-x-5 mb-8">
                           <div className="h-[310px] w-[270px] flex-none rounded mb-5 md:mb-0">
-                            <img
-                              src={course.instructor?.avatar}
-                              alt={course.instructor?.name || "Instructor"}
-                              className="w-full h-full object-cover rounded"
-                            />
+                            <Link to={`/single-instructors/${course.instructor?.id}`}>
+                              <img
+                                src={course.instructor?.avatar}
+                                alt={course.instructor?.name || "Instructor"}
+                                className="w-full h-full object-cover rounded"
+                              />
+                            </Link>
                           </div>
                           <div className="flex-1">
                             <div className="max-w-[300px]">
                               <h4 className=" text-[34px] font-bold leading-[51px]">
-                                {course.instructor?.name}
+                                <Link to={`/single-instructors/${course.instructor?.id}`}>
+                                  {course.instructor?.name}
+                                </Link>
                               </h4>
                               <div className=" text-primary mb-6">
                                 {course.instructor?.bio}
@@ -216,7 +219,11 @@ const CourseDetails = () => {
                       <img src={user} alt="" />
                       <div className="text-black font-semibold">Instructor</div>
                     </div>
-                    <div className="flex-none">{course.instructor?.name}</div>
+                    <div className="flex-none">
+                      <Link to={`/single-instructors/${course.instructor?.id}`}>
+                        {course.instructor?.name}
+                      </Link>
+                    </div>
                   </li>
 
                   <li className="flex space-x-3 border-b border-[#ECECEC] mb-4 pb-4 last:pb-0 past:mb-0 last:border-0">

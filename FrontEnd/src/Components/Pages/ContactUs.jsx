@@ -18,8 +18,9 @@ const ContactUs = () => {
                 Get In Touch <span class="shape-bg">Today</span>
               </h4>
               <div>
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered.
+              "We’re here to assist you. Feel free to contact us with any questions or course inquiries. Our team will respond as soon as possible."
+
+
               </div>
               <ul class=" list-item space-y-6 pt-8">
                 <li class="flex">
@@ -30,7 +31,7 @@ const ContactUs = () => {
                   </div>
                   <div class="flex-1">
                     <h4 class=" lg:text-xl text-lg mb-1">Email-Us :</h4>
-                    <div>Contactyourmail@gmail.com</div>
+                    <div>EduMarket@gmail.com</div>
                   </div>
                 </li>
                 <li class="flex">
@@ -41,7 +42,7 @@ const ContactUs = () => {
                   </div>
                   <div class="flex-1">
                     <h4 class=" lg:text-xl text-lg mb-1">Call Us:</h4>
-                    <div>+88012 2910 1781, +88019 6128 1689</div>
+                    <div>+88012 2910 1781</div>
                   </div>
                 </li>
               </ul>

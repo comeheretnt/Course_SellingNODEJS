@@ -124,7 +124,7 @@ const PaymentModal = ({ isOpen, onClose, course, user }) => {
                                         Deselect EMI
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="hover:text-pink grid grid-cols-5 gap-2">
                                     {emiOptions.map((emi, index) => (
                                         <button
                                             key={index}

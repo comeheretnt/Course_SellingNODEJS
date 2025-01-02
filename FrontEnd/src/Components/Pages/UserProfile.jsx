@@ -57,6 +57,36 @@ const UserProfile = () => {
     fetchUserProfile();
   }, [navigate]);
 
+  const handleSave = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("You must be logged in to update your profile.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/users/update", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser(data.user);
+        setIsEditing(false);
+      } else {
+        const data = await response.json();
+        setError(data.message || "Failed to update profile. Please try again later.");
+      }
+    } catch (error) {
+      setError("An error occurred while updating profile.");
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
@@ -67,9 +97,6 @@ const UserProfile = () => {
         <div className="flex flex-col md:flex-row items-start md:space-x-6">
           <div className="flex flex-col items-center md:w-1/4 bg-white p-6 shadow-md rounded-lg">
             <div className="relative w-32 h-32 mb-4">
-              <div className="w-full h-full bg-gray-300 rounded-full flex items-center justify-center">
-                <span className="text-xl font-semibold">Avatar</span>
-              </div>
             </div>
             <h2 className="text-lg font-semibold text-center">{user?.name || "User Name"}</h2>
             <p className="text-sm text-gray-500 text-center">{user?.role || "Role"}</p>
@@ -105,14 +132,14 @@ const UserProfile = () => {
                         name={field}
                         value={formData[field]}
                         onChange={(e) => setFormData({ ...formData, [field]: e.target.value })}
-                        className="form-control border border-gray-300 p-2 rounded-md w-full"
+                        className="from-control border border-gray-300 p-2 rounded-md w-full"
                         readOnly={!isEditing}
                       />
                     </div>
                   ))}
                   {isEditing ? (
                     <button
-                      onClick={() => setIsEditing(false)}
+                      onClick={handleSave}
                       className="btn btn-primary mt-4 bg-purple-500 text-white px-4 py-2 rounded-md"
                     >
                       Save

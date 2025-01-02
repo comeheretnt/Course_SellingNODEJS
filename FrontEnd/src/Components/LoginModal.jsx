@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../assets/css/custom.css";
 import SignUpModal from "./SignUpModal";
 
@@ -6,7 +6,26 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [isSignUpOpen, setIsSignUpOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false); // State for remember me
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isOpen) {
+      const savedEmail = localStorage.getItem("email"); // Lấy email đăng nhập gần nhất
+      setEmail(savedEmail || "");
+
+      if (savedEmail) {
+        const savedPassword = localStorage.getItem(savedEmail); // Lấy mật khẩu theo email
+        if (savedPassword) {
+          setPassword(savedPassword);
+          setRememberMe(true); // Tự tick nếu có mật khẩu
+        } else {
+          setPassword("");
+          setRememberMe(false); // Không tick nếu không có mật khẩu
+        }
+      }
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -16,6 +35,19 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
   const handleSignUpClose = () => {
     setIsSignUpOpen(false);
+  };
+  const handleEmailChange = (e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+
+    const savedPassword = localStorage.getItem(newEmail);
+    if (savedPassword) {
+      setPassword(savedPassword);
+      setRememberMe(true); // Tự động tick nếu có mật khẩu
+    } else {
+      setPassword("");
+      setRememberMe(false); // Bỏ tick nếu không có mật khẩu
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -34,8 +66,16 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        onLogin(data.token, data.user); // Gọi hàm onLogin để cập nhật trạng thái người dùng
+        localStorage.setItem("email", email); // Lưu email tài khoản đăng nhập cuối cùng
+
+        // Lưu mật khẩu theo email nếu tick "Remember Me"
+        if (rememberMe) {
+          localStorage.setItem(email, password); // Lưu mật khẩu theo email
+        } else {
+          localStorage.removeItem(email); // Xóa mật khẩu của email này nếu không tick
+        }
+
+        onLogin(data.token, data.user);
         onClose();
       } else {
         setError(data.message);
@@ -65,24 +105,35 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
             <div className="modal-body p-5">
               {error && <div className="text-red-500">{error}</div>}
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-[30px] mt-6">
+              <form
+                onSubmit={handleSubmit}
+                className="grid grid-cols-1 gap-[30px] mt-6"
+              >
                 <div>
-                  <label htmlFor="email" className="block font-medium text-gray-700">
-                    <span className="glyphicon glyphicon-user mr-2"></span> Email
+                  <label
+                    htmlFor="email"
+                    className="block font-medium text-gray-700"
+                  >
+                    <span className="glyphicon glyphicon-user mr-2"></span>{" "}
+                    Email
                   </label>
                   <input
                     type="email"
                     className="from-control"
                     id="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange} // Thay đổi từ setEmail sang handleEmailChange
                     placeholder="Enter email"
                     required
                   />
                 </div>
                 <div>
-                  <label htmlFor="password" className="block font-medium text-gray-700">
-                    <span className="glyphicon glyphicon-eye-open mr-2"></span> Password
+                  <label
+                    htmlFor="password"
+                    className="block font-medium text-gray-700"
+                  >
+                    <span className="glyphicon glyphicon-eye-open mr-2"></span>{" "}
+                    Password
                   </label>
                   <input
                     type="password"
@@ -96,14 +147,17 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 </div>
                 <div className="checkbox mb-4">
                   <label>
-                    <input type="checkbox" value="" className="mr-2" defaultChecked />
+                    <input
+                      type="checkbox"
+                      value=""
+                      className="mr-2"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                    />
                     Remember me
                   </label>
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary mt-[10px]"
-                >
+                <button type="submit" className="btn btn-primary mt-[10px]">
                   <span className="glyphicon glyphicon-off mr-2"></span> Login
                 </button>
               </form>
@@ -118,10 +172,20 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
                 <span className="glyphicon glyphicon-remove mr-2"></span> Cancel
               </button>
               <p className="mt-3">
-                Not a member? <a href="#" onClick={handleSignUpClick} className="text-[#ff7e84]">Sign Up</a>
+                Not a member?{" "}
+                <a
+                  href="#"
+                  onClick={handleSignUpClick}
+                  className="text-[#ff7e84]"
+                >
+                  Sign Up
+                </a>
               </p>
               <p>
-                Forgot <a href="#" className="text-[#ff7e84]">Password?</a>
+                Forgot{" "}
+                <a href="#" className="text-[#ff7e84]">
+                  Password?
+                </a>
               </p>
             </div>
           </div>
